@@ -5,7 +5,7 @@
 [![Tests](https://github.com/simonw/datasette-export-notebook/workflows/Test/badge.svg)](https://github.com/simonw/datasette-export-notebook/actions?query=workflow%3ATest)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/simonw/datasette-export-notebook/blob/main/LICENSE)
 
-UNDER CONSTRUCTION: Datasette plugin providing instructions for exporting data to Jupyter or Observable
+Datasette plugin providing instructions for exporting data to Jupyter or Observable
 
 ## Installation
 
@@ -15,7 +15,7 @@ Install this plugin in the same environment as Datasette.
 
 ## Usage
 
-Usage instructions go here.
+Once installed, the plugin will add a `.Notebook` export option to every table and query. Clicking on this link will show instructions for exporting the data to Jupyter or Observable notebooks.
 
 ## Development
 

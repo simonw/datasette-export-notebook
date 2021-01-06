@@ -31,5 +31,6 @@ setup(
     install_requires=["datasette"],
     extras_require={"test": ["pytest", "pytest-asyncio"]},
     tests_require=["datasette-export-notebook[test]"],
+    package_data={"datasette_export_notebook": ["templates/*.html"]},
     python_requires=">=3.6",
 )

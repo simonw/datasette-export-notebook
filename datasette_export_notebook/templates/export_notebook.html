@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Export to a notebook{% endblock %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex">
+<style type="text/css">pre { margin-bottom: 1em; }</style>
+{% endblock %}
+
+{% block content %}
+<h1>Export to a notebook</h1>
+
+<p>You can export this data to a <a href="https://jupyter.org/">Jupyter</a> or <a href="https://observablehq.com/">Observable</a> notebook by copyind and pasting the following:</p>
+
+<h2>Jupyter</h2>
+
+<p>Make sure you have <a href="https://pandas.pydata.org/">Pandas</a>. Import it in a cell like this:</p>
+
+<pre>
+import pandas
+</pre>
+
+If this shows an error you can run <code>%pip install pandas</code> in a notebook cell to install it.</p>
+
+<p>Now paste the following into a cell to load the data into a DataFrame called <code>df</code>:</p>
+
+<pre>
+df = pandas.read_json({{ json.dumps(json_url) }})
+</pre>
+
+<p>Run <code>df</code> in a new cell to see the table.</p>
+
+<h2>Observable</h2>
+
+<p>Import <a href="https://d3js.org/">d3</a> by running this in a cell:</p>
+
+<pre>
+d3 = require("d3@5")
+</pre>
+
+<p>Now import the data into a variable called <code>rows</code> like this:</p>
+
+<pre>
+rows = d3.json({{ json.dumps(json_url) }})
+</pre>
+
+
+{% endblock %}
