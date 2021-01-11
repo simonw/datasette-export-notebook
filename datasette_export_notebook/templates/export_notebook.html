@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Export to a notebook{% endblock %}
+{% block title %}Export {{ count }} rows to a notebook{% endblock %}
 
 {% block extra_head %}
 <meta name="robots" content="noindex">
@@ -8,7 +8,9 @@
 {% endblock %}
 
 {% block content %}
-<h1>Export to a notebook</h1>
+<h1>Export {{ count }} rows to a notebook</h1>
+
+<p><a href="{{ back_url }}">Back to the rows</a></p>
 
 <p>You can export this data to a <a href="https://jupyter.org/">Jupyter</a> or <a href="https://observablehq.com/">Observable</a> notebook by copying and pasting the following:</p>
 
@@ -22,13 +24,19 @@ import pandas
 
 If this shows an error you can run <code>%pip install pandas</code> in a notebook cell to install it.</p>
 
-<p>Now paste the following into a cell to load the data into a DataFrame called <code>df</code>:</p>
+<p>Now paste the following into a cell to load the {{ count }} row{% if count != 1 %}s{% endif %} into a DataFrame called <code>df</code>:</p>
 
 <pre>
 df = pandas.read_json({{ json.dumps(json_url) }})
 </pre>
 
 <p>Run <code>df</code> in a new cell to see the table.</p>
+
+{% if csv_stream_url and total_count and total_count > count %}
+    <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
+    <pre>df = pandas.read_csv({{ json.dumps(csv_stream_url) }})</pre>
+    <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
+{% endif %}
 
 <h2>Observable</h2>
 
@@ -44,5 +52,10 @@ d3 = require("d3@5")
 rows = d3.json({{ json.dumps(json_url) }})
 </pre>
 
+{% if csv_stream_url and total_count and total_count > count %}
+    <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
+    <pre>rows = d3.csv({{ json.dumps(csv_stream_url) }})</pre>
+    <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
+{% endif %}
 
 {% endblock %}

@@ -29,7 +29,7 @@ setup(
     packages=["datasette_export_notebook"],
     entry_points={"datasette": ["export_notebook = datasette_export_notebook"]},
     install_requires=["datasette"],
-    extras_require={"test": ["pytest", "pytest-asyncio"]},
+    extras_require={"test": ["pytest", "pytest-asyncio", "sqlite-utils"]},
     tests_require=["datasette-export-notebook[test]"],
     package_data={"datasette_export_notebook": ["templates/*.html"]},
     python_requires=">=3.6",
