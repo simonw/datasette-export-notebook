@@ -34,6 +34,7 @@ async def render_notebook(datasette, request, data, rows):
         await datasette.render_template(
             "export_notebook.html",
             {
+                "cors_enabled": datasette.cors,
                 "back_url": back_url,
                 "csv_stream_url": csv_stream_url,
                 "json_url": json_url,

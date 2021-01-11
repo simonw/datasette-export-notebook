@@ -37,25 +37,23 @@ df = pandas.read_json({{ json.dumps(json_url) }})
     <pre>df = pandas.read_csv({{ json.dumps(csv_stream_url) }})</pre>
     <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
 {% endif %}
-
 <h2>Observable</h2>
+{% if cors_enabled %}
+    <p>Import <a href="https://d3js.org/">d3</a> by running this in a cell:</p>
 
-<p>Import <a href="https://d3js.org/">d3</a> by running this in a cell:</p>
+    <pre>d3 = require("d3@5")</pre>
 
-<pre>
-d3 = require("d3@5")
-</pre>
+    <p>Now import the data into a variable called <code>rows</code> like this:</p>
 
-<p>Now import the data into a variable called <code>rows</code> like this:</p>
+    <pre>rows = d3.json({{ json.dumps(json_url) }})</pre>
 
-<pre>
-rows = d3.json({{ json.dumps(json_url) }})
-</pre>
-
-{% if csv_stream_url and total_count and total_count > count %}
-    <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
-    <pre>rows = d3.csv({{ json.dumps(csv_stream_url) }})</pre>
-    <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
+    {% if csv_stream_url and total_count and total_count > count %}
+        <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
+        <pre>rows = d3.csv({{ json.dumps(csv_stream_url) }})</pre>
+        <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
+    {% endif %}
+{% else %}
+    <p class="message-warning">Export to Observable is only available if Datasette is running with the <code>--cors</code> option.</p>
 {% endif %}
 
 {% endblock %}

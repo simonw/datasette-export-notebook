@@ -30,9 +30,10 @@ async def test_export_notebook(
     expected_json_url,
     expected_csv_url,
 ):
-    datasette = Datasette([db_path])
+    datasette = Datasette([db_path], cors=True)
     response = await datasette.client.get(path)
     assert 200 == response.status_code
+    assert "--cors" not in response.text
     assert (
         "df = pandas.read_json(&#34;{}&#34;)".format(expected_json_url) in response.text
     )
@@ -45,3 +46,13 @@ async def test_export_notebook(
             in response.text
         )
         assert "rows = d3.csv(&#34;{}&#34;)".format(expected_csv_url) in response.text
+
+
+@pytest.mark.asyncio
+async def test_notebook_no_cors(db_path):
+    datasette = Datasette([db_path])
+    response = await datasette.client.get("/db/big.Notebook")
+    assert (
+        "Export to Observable is only available if Datasette is running with the"
+        in response.text
+    )
