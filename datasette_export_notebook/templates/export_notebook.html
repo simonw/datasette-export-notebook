@@ -32,7 +32,7 @@ df = pandas.read_json({{ json.dumps(json_url) }})
 
 <p>Run <code>df</code> in a new cell to see the table.</p>
 
-{% if csv_stream_url and total_count and total_count > count %}
+{% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
     <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
     <pre>df = pandas.read_csv({{ json.dumps(csv_stream_url) }})</pre>
     <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
@@ -47,7 +47,7 @@ df = pandas.read_json({{ json.dumps(json_url) }})
 
     <pre>rows = d3.json({{ json.dumps(json_url) }})</pre>
 
-    {% if csv_stream_url and total_count and total_count > count %}
+    {% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
         <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
         <pre>rows = d3.csv({{ json.dumps(csv_stream_url) }})</pre>
         <p>This could lose type information, since every column in a CSV import will be treated as text.</p>

@@ -56,3 +56,10 @@ async def test_notebook_no_cors(db_path):
         "Export to Observable is only available if Datasette is running with the"
         in response.text
     )
+
+
+@pytest.mark.asyncio
+async def test_notebook_no_csv(db_path):
+    datasette = Datasette([db_path], config={"allow_csv_stream": False})
+    response = await datasette.client.get("/db/big.Notebook")
+    assert ".csv" not in response.text
