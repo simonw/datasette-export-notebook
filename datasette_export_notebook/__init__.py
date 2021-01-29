@@ -1,5 +1,6 @@
 from datasette import hookimpl
 from datasette.utils.asgi import Response
+from .utils import detect_types
 import json
 
 
@@ -38,6 +39,9 @@ async def render_notebook(datasette, request, data, rows):
                 "allow_csv_stream": datasette.setting("allow_csv_stream"),
                 "back_url": back_url,
                 "csv_stream_url": csv_stream_url,
+                "pandas_stream_code": pandas_stream_code(
+                    csv_stream_url, detect_types(rows)
+                ),
                 "json_url": json_url,
                 "count": count,
                 "total_count": total_count,
@@ -45,6 +49,20 @@ async def render_notebook(datasette, request, data, rows):
             },
         )
     )
+
+
+def pandas_stream_code(csv_stream_url, column_types):
+    dtype = ""
+    non_string_types = {
+        col: type for col, type in column_types.items() if type != "str"
+    }
+    if non_string_types:
+        lines = [", dtype={"]
+        for column, type in non_string_types.items():
+            lines.append("    {}: {},".format(json.dumps(column), type))
+        lines.append("}")
+        dtype = "\n".join(lines)
+    return "df = pandas.read_csv({}{})".format(json.dumps(csv_stream_url), dtype)
 
 
 @hookimpl

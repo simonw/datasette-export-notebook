@@ -34,8 +34,7 @@ df = pandas.read_json({{ json.dumps(json_url) }})
 
 {% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
     <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
-    <pre>df = pandas.read_csv({{ json.dumps(csv_stream_url) }})</pre>
-    <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
+    <pre>{{ pandas_stream_code }}</pre>
 {% endif %}
 <h2>Observable</h2>
 {% if cors_enabled %}
