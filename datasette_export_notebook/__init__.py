@@ -62,7 +62,7 @@ def pandas_stream_code(csv_stream_url, column_types):
             lines.append("    {}: {},".format(json.dumps(column), type))
         lines.append("}")
         dtype = "\n".join(lines)
-    return "df = pandas.read_csv({}{})".format(json.dumps(csv_stream_url), dtype)
+    return "df = pandas.read_csv(\n    {}{})".format(json.dumps(csv_stream_url), dtype)
 
 
 @hookimpl

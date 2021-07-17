@@ -4,7 +4,13 @@
 
 {% block extra_head %}
 <meta name="robots" content="noindex">
-<style type="text/css">pre { margin-bottom: 1em; }</style>
+<style type="text/css">
+pre {
+  width: 95%;
+  margin-bottom: 1em;
+  white-space: pre-wrap;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -18,7 +24,7 @@
 
 <p>Make sure you have <a href="https://pandas.pydata.org/">Pandas</a>. Import it in a cell like this:</p>
 
-<pre>
+<pre class="copyable">
 import pandas
 </pre>
 
@@ -26,29 +32,85 @@ If this shows an error you can run <code>%pip install pandas</code> in a noteboo
 
 <p>Now paste the following into a cell to load the {{ count }} row{% if count != 1 %}s{% endif %} into a DataFrame called <code>df</code>:</p>
 
-<pre>
-df = pandas.read_json({{ json.dumps(json_url) }})
+<pre class="copyable">
+df = pandas.read_json(
+    {{ json.dumps(json_url) }}
+)
 </pre>
 
 <p>Run <code>df</code> in a new cell to see the table.</p>
 
 {% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
     <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
-    <pre>{{ pandas_stream_code }}</pre>
+    <pre class="copyable">{{ pandas_stream_code }}</pre>
 {% endif %}
 <h2>Observable</h2>
 {% if cors_enabled %}
     <p>Import the data into a variable called <code>rows</code> like this:</p>
 
-    <pre>rows = d3.json({{ json.dumps(json_url) }})</pre>
+    <pre class="copyable">rows = d3.json(
+  {{ json.dumps(json_url) }}
+)</pre>
 
     {% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
         <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
-        <pre>rows = d3.csv({{ json.dumps(csv_stream_url) }})</pre>
-        <p>This could lose type information, since every column in a CSV import will be treated as text.</p>
+        <pre class="copyable">rows = d3.csv(
+  {{ json.dumps(csv_stream_url) }},
+  d3.autoType
+)</pre>
     {% endif %}
 {% else %}
     <p class="message-warning">Export to Observable is only available if Datasette is running with the <code>--cors</code> option.</p>
 {% endif %}
+
+<script>
+var svgCopyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+Array.from(document.querySelectorAll("pre.copyable")).forEach((pre) => {
+  var svg = document.createElement("div");
+  svg.innerHTML = svgCopyIcon;
+  svg = svg.querySelector("*");
+  pre.style.position = "relative";
+  svg.style.position = "absolute";
+  svg.style.top = 0;
+  svg.style.right = 0;
+  svg.style.width = "14px";
+  svg.style.cursor = "pointer";
+  svg.addEventListener("click", function () {
+    var textarea = document.createElement("textarea");
+    textarea.style.position = "absolute";
+    textarea.style.opacity = 0;
+    // Everything except for the contents of the span
+    var cloned = pre.cloneNode(true);
+    Array.from(cloned.querySelectorAll("span,svg")).forEach(
+      el => el.parentNode.removeChild(el)
+    );
+    textarea.value = cloned.innerText;
+    pre.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.parentNode.removeChild(textarea);
+    // Show a 'copied' message then fade it out
+    var copied = document.createElement("span");
+    copied.innerHTML = "Copied";
+    copied.style.position = "absolute";
+    copied.style.top = "3ex";
+    copied.style.right = 0;
+    copied.style.color = "#666";
+    copied.style.fontFamily = "Helvetica, sans-serif";
+    copied.style.fontSize = "0.8em";
+    copied.style.fontWeight = "bold";
+    copied.style.transition = "opacity 1s";
+    pre.appendChild(copied);
+    setTimeout(() => {
+      copied.parentNode.removeChild(copied);
+    }, 1500);
+    setTimeout(() => {
+      copied.style.opacity = 0;
+    }, 500);
+  });
+  pre.appendChild(svg);
+});
+</script>
 
 {% endblock %}

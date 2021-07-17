@@ -38,17 +38,32 @@ async def test_export_notebook(
     assert 200 == response.status_code
     assert "--cors" not in response.text
     assert (
-        "df = pandas.read_json(&#34;{}&#34;)".format(expected_json_url) in response.text
+        """
+df = pandas.read_json(
+    &#34;{}&#34;
+)
+""".strip().format(
+            expected_json_url
+        )
+        in response.text
     )
-    assert "rows = d3.json(&#34;{}&#34;)".format(expected_json_url) in response.text
+    assert (
+        """
+rows = d3.json(
+  &#34;{}&#34;
+)""".strip().format(
+            expected_json_url
+        )
+        in response.text
+    )
     if not expected_csv_url:
         assert ".csv" not in response.text
     else:
         assert (
-            "df = pandas.read_csv(&#34;{}&#34;".format(expected_csv_url)
+            "df = pandas.read_csv(\n    &#34;{}&#34;".format(expected_csv_url)
             in response.text
         )
-        assert "rows = d3.csv(&#34;{}&#34;)".format(expected_csv_url) in response.text
+        assert "rows = d3.csv(\n  &#34;{}&#34".format(expected_csv_url) in response.text
 
 
 @pytest.mark.asyncio
@@ -56,7 +71,8 @@ async def test_export_notebook_pandas_stream_with_types(db_path):
     datasette = Datasette([db_path], cors=True)
     response = await datasette.client.get("/db/big.Notebook")
     expected = (
-        "<pre>df = pandas.read_csv(&#34;http://localhost/db/big.csv?_stream=on&#34;, dtype={\n"
+        '<pre class="copyable">df = pandas.read_csv(\n'
+        "    &#34;http://localhost/db/big.csv?_stream=on&#34;, dtype={\n"
         "    &#34;rowid&#34;: int,\n"
         "    &#34;id&#34;: int,\n"
         "})</pre>"
