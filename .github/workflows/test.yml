@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -e '.[test]'
-        pip install datasette${{ matrix.datasette-version }}
+        pip install 'datasette${{ matrix.datasette-version }}'
     - name: Run tests
       run: |
         pytest
