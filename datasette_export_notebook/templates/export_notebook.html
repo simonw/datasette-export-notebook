@@ -40,8 +40,8 @@ df = pandas.read_json(
 
 <p>Run <code>df</code> in a new cell to see the table.</p>
 
-{% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
-    <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
+{% if allow_csv_stream and csv_stream_url and has_next %}
+    <p>You can export all {% if total_count %}{{ "{:,}".format(total_count) }} {% endif %}rows using a single streaming CSV export like this:</p>
     <pre class="copyable">{{ pandas_stream_code }}</pre>
 {% endif %}
 <h2>Observable</h2>
@@ -52,8 +52,8 @@ df = pandas.read_json(
   {{ json.dumps(json_url) }}
 )</pre>
 
-    {% if allow_csv_stream and csv_stream_url and total_count and total_count > count %}
-        <p>You can export all {{ "{:,}".format(total_count) }} rows using a single streaming CSV export like this:</p>
+    {% if allow_csv_stream and csv_stream_url and has_next %}
+        <p>You can export all {% if total_count %}{{ "{:,}".format(total_count) }} {% endif %}rows using a single streaming CSV export like this:</p>
         <pre class="copyable">rows = d3.csv(
   {{ json.dumps(csv_stream_url) }},
   d3.autoType

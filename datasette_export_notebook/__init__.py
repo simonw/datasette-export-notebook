@@ -23,7 +23,7 @@ async def render_notebook(datasette, request, data, rows):
         total_count = data["filtered_table_rows_count"]
 
     csv_stream_url = None
-    if data.get("next_url"):
+    if data.get("next"):
         csv_path = original_path + ".csv"
         if request.query_string:
             csv_path += "?" + request.query_string + "&_stream=on"
@@ -45,6 +45,7 @@ async def render_notebook(datasette, request, data, rows):
                 "json_url": json_url,
                 "count": count,
                 "total_count": total_count,
+                "has_next": bool(data.get("next")),
                 "json": json,
             },
         )
